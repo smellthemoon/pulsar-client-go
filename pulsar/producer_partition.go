@@ -20,6 +20,7 @@ package pulsar
 import (
 	"context"
 	"errors"
+	"fmt"
 	"strings"
 	"sync"
 	"sync/atomic"
@@ -529,6 +530,7 @@ func (p *partitionProducer) internalSend(request *sendRequest) {
 		}
 	}
 
+	fmt.Sprintf("receive send msg,name:%s", p.Name())
 	// if msg is too large
 	if len(payload) > int(p._getConn().GetMaxMessageSize()) {
 		p.publishSemaphore.Release()

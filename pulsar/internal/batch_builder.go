@@ -219,6 +219,9 @@ func (bc *batchContainer) Add(
 
 		bc.cmdSend.Send.SequenceId = proto.Uint64(sequenceID)
 	}
+	bc.log.WithField("readerable size", len(bc.buffer.ReadableSlice())).
+		WithField("writeable size", len(bc.buffer.WritableSlice())).
+		WithField("capacity", bc.buffer.Capacity()).Info("addSingleMessageToBatch")
 	addSingleMessageToBatch(bc.buffer, metadata, payload)
 
 	bc.numMessages++
@@ -245,7 +248,7 @@ func (bc *batchContainer) Flush() (
 		return nil, 0, nil, nil
 	}
 
-	bc.log.Debug("BatchBuilder flush: messages: ", bc.numMessages)
+	bc.log.Info("BatchBuilder flush: messages: ", bc.numMessages)
 
 	bc.msgMetadata.NumMessagesInBatch = proto.Int32(int32(bc.numMessages))
 	bc.cmdSend.Send.NumMessages = proto.Int32(int32(bc.numMessages))

@@ -19,6 +19,7 @@ package internal
 
 import (
 	"encoding/binary"
+	"fmt"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -161,6 +162,9 @@ func (b *buffer) MoveToFront() {
 
 func (b *buffer) Resize(newSize uint32) {
 	newData := make([]byte, newSize)
+	if newSize > 1024*1024 {
+		panic(fmt.Sprintf("resize too large"))
+	}
 	size := b.ReadableBytes()
 	copy(newData, b.Read(size))
 	b.data = newData
@@ -216,4 +220,5 @@ func (b *buffer) Put(writerIdx uint32, s []byte) {
 func (b *buffer) Clear() {
 	b.readerIdx = 0
 	b.writerIdx = 0
+	b.data = nil
 }
