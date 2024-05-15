@@ -300,6 +300,14 @@ func (c *regexConsumer) SeekByTime(_ time.Time) error {
 	return newError(SeekFailed, "seek command not allowed for regex consumer")
 }
 
+func (c *regexConsumer) GetLastMessageID(topicName string, partitionId int64) (MessageID, error) {
+	consumer, ok := c.consumers[topicName]
+	if !ok {
+		return nil, newError(InvalidTopicName, fmt.Sprintf("unable find topic=%s", topicName))
+	}
+	return consumer.GetLastMessageID(topicName, partitionId)
+}
+
 // Name returns the name of consumer.
 func (c *regexConsumer) Name() string {
 	return c.consumerName
