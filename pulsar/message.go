@@ -178,7 +178,9 @@ func NewMessageID(ledgerID int64, entryID int64, batchIdx int32, partitionIdx in
 
 // EarliestMessageID returns a messageID that points to the earliest message available in a topic
 func EarliestMessageID() MessageID {
-	return earliestMessageID
+	// https://github.com/milvus-io/milvus pkg/mq/msgstream/mqwrapper/pulsar/pulsar_consumer.go v2.5.0 line:67
+	// may modify the MessageID, not return earliestMessageID to prevent datarace
+	return newMessageID(-1, -1, -1, -1, 0)
 }
 
 // LatestMessageID returns a messageID that points to the latest message
